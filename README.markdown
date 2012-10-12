@@ -3,6 +3,10 @@
 
 Context sensitive notifications for Android
 
+## Attention
+
+The ownership of the original repository has moved to [keyboardsurfer](https://github.com/keyboardsurfer/Crouton).
+
 ## Overview
 
 **Crouton** is a class that can be used by Android developers that feel the need for an **alternative to the Context insensitive [Toast](http://developer.android.com/reference/android/widget/Toast.html)**.
