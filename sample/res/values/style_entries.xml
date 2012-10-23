@@ -23,6 +23,8 @@
 		<item>Confirm</item>
 		<item>Info</item>
 		<item>Custom</item>
+		<item>CustomView</item>
+		<item>Bottom|Center</item>
 	</string-array>
 
 </resources>
