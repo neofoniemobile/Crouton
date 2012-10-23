@@ -33,15 +33,15 @@ public class Style {
 
   static {
     ALERT = new Builder().setDuration(5000)
-                         .setBackgroundColor(android.R.color.holo_red_light)
+                         .setBackgroundColor(R.color.holo_red_light)
                          .setHeight(LayoutParams.WRAP_CONTENT)
                          .build();
     CONFIRM = new Builder().setDuration(3000)
-                           .setBackgroundColor(android.R.color.holo_green_light)
+                           .setBackgroundColor(R.color.holo_green_light)
                            .setHeight(LayoutParams.WRAP_CONTENT)
                            .build();
     INFO = new Builder().setDuration(3000)
-                        .setBackgroundColor(android.R.color.holo_blue_light)
+                        .setBackgroundColor(R.color.holo_blue_light)
                         .setHeight(LayoutParams.WRAP_CONTENT)
                         .build();
   }
@@ -211,13 +211,13 @@ public class Style {
 
     public Builder() {
       durationInMilliseconds = 3000;
-      colorResourceId = android.R.color.holo_blue_light;
+      colorResourceId = R.color.holo_blue_light;
       heightInPixels = ViewGroup.LayoutParams.WRAP_CONTENT;
       paddingInPixels = 10;
-      backgroundColorResourceId = android.R.color.holo_blue_light;
+      backgroundColorResourceId = R.color.holo_blue_light;
       backgroundDrawableResourceId = 0;
       isTileEnabled = false;
-      textColorResourceId = android.R.color.white;
+      textColorResourceId = R.color.white;
       heightInPixels = ViewGroup.LayoutParams.WRAP_CONTENT;
       gravity = Gravity.CENTER;
       imageDrawable = null;
