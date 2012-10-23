@@ -20,9 +20,11 @@ import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import android.view.Gravity;
 import android.view.ViewParent;
 import android.view.ViewGroup;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.os.Message;
 import android.os.Handler;
 import android.app.Activity;
@@ -175,7 +177,9 @@ final class Manager extends Handler {
     if (croutonView.getParent() == null) {
       ViewGroup.LayoutParams params = croutonView.getLayoutParams();
       if (params == null) {
-        params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        final FrameLayout.LayoutParams fp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        fp.gravity = Gravity.CENTER_HORIZONTAL;
+        params = fp;
       }
       crouton.getActivity().addContentView(croutonView, params);
     }

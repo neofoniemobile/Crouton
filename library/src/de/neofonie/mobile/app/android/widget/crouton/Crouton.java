@@ -24,14 +24,20 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;;
 
 /*
  * Based on an article by Cyril Mottier (http://android.cyrilmottier.com/?p=773) <br>
@@ -51,6 +57,9 @@ public final class Crouton {
 
   private Activity activity;
   private FrameLayout croutonView;
+  private FrameLayout.LayoutParams contentParams;
+  private int textLayoutWidth = ViewGroup.LayoutParams.MATCH_PARENT;
+  private int croutonHeight;
 
   /**
    * Creates the {@link Crouton}.
@@ -283,7 +292,6 @@ public final class Crouton {
     if (this.croutonView == null) {
       initializeCroutonView();
     }
-
     return croutonView;
   }
 
@@ -300,11 +308,15 @@ public final class Crouton {
     if (this.style.heightDimensionResId > 0) {
       height = resources.getDimensionPixelSize(this.style.heightDimensionResId);
     }
+    if(croutonHeight != 0) {
+        height = croutonHeight;
+    }
     this.croutonView.setLayoutParams(new FrameLayout.LayoutParams(
         FrameLayout.LayoutParams.MATCH_PARENT, height));
 
+    RelativeLayout contentView = new RelativeLayout(this.activity);
     // set background
-    this.croutonView.setBackgroundColor(resources.getColor(this.style.backgroundColorResourceId));
+    contentView.setBackgroundColor(resources.getColor(this.style.backgroundColorResourceId));
 
     // set the background drawable if set. This will override the background
     // color.
@@ -316,14 +328,12 @@ public final class Crouton {
         drawable.setTileModeXY(Shader.TileMode.REPEAT,
           Shader.TileMode.REPEAT);
       }
-      this.croutonView.setBackgroundDrawable(drawable);
+      contentView.setBackgroundDrawable(drawable);
     }
 
     // create content view
-    RelativeLayout contentView = new RelativeLayout(this.activity);
-    contentView.setLayoutParams(new RelativeLayout.LayoutParams(
-        RelativeLayout.LayoutParams.MATCH_PARENT,
-        RelativeLayout.LayoutParams.WRAP_CONTENT));
+
+    contentView.setLayoutParams(getContentLayoutParams());
 
     // set padding
     int padding = this.style.paddingInPixels;
@@ -399,7 +409,7 @@ public final class Crouton {
     }
 
     RelativeLayout.LayoutParams textParams = new RelativeLayout.LayoutParams(
-      RelativeLayout.LayoutParams.MATCH_PARENT,
+      textLayoutWidth,
       RelativeLayout.LayoutParams.WRAP_CONTENT);
     if (image != null) {
       textParams.addRule(RelativeLayout.RIGHT_OF, image.getId());
@@ -407,6 +417,42 @@ public final class Crouton {
     contentView.addView(text, textParams);
     this.croutonView.addView(contentView);
   }
+
+  private LayoutParams getContentLayoutParams() {
+    checkContentLayoutParams();
+    return contentParams;
+  }
+
+  
+  private void checkContentLayoutParams() {
+    if(contentParams == null) {
+      contentParams = new FrameLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT);
+      contentParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
+    }
+  }
+  /**
+   * Set the location at which the notification should appear on the screen.
+   * @see android.view.Gravity
+   * @see #getGravity
+   */
+  public void setGravity(int gravity, int xOffset, int yOffset) {
+    checkContentLayoutParams();
+    contentParams.gravity = gravity;
+    croutonHeight = MATCH_PARENT;
+    if((gravity&Gravity.HORIZONTAL_GRAVITY_MASK) == Gravity.LEFT || (gravity&Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK) == Gravity.START) {
+        contentParams.leftMargin = xOffset;
+    }else if((gravity&Gravity.HORIZONTAL_GRAVITY_MASK) == Gravity.RIGHT || (gravity&Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK) == Gravity.END) {
+        contentParams.rightMargin = xOffset;
+    }
+    
+    if((gravity&Gravity.VERTICAL_GRAVITY_MASK) == Gravity.TOP) {
+        contentParams.topMargin = yOffset;
+    }else if((gravity&Gravity.VERTICAL_GRAVITY_MASK) == Gravity.BOTTOM) {
+        contentParams.bottomMargin = yOffset;
+    }
+    textLayoutWidth = ViewGroup.LayoutParams.WRAP_CONTENT;
+  }
+
 
   private Animation inAnimation;
   private Animation outAnimation;

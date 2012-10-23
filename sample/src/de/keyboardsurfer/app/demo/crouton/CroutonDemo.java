@@ -19,13 +19,18 @@ package de.keyboardsurfer.app.demo.crouton;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.FrameLayout.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
@@ -66,19 +71,28 @@ public class CroutonDemo extends Activity implements OnClickListener, OnItemSele
   }
 
   private void showCrouton() {
-    Style croutonStyle = getSelectedStyleFromSpinner();
+    final int id = getSelectedSpinnerItemId();
+    Style croutonStyle = getSelectedStyleFromSpinner(id);
 
     if (croutonStyle != null) {
       showNonCustomCrouton();
+    } else if(id == 4) {
+      showCustomViewCrouton();
+    } else if(id == 5) {
+        showBottomCenterCrouton();
     } else {
       showCustomCrouton();
     }
   }
 
-  private Style getSelectedStyleFromSpinner() {
+  private int getSelectedSpinnerItemId() {
     Spinner styleSpinner = (Spinner) findViewById(R.id.spinner_style);
+    return (int) styleSpinner.getSelectedItemId();
+  }
+  
+  private Style getSelectedStyleFromSpinner(int id) {
 
-    switch ((int) styleSpinner.getSelectedItemId()) {
+    switch (id) {
       case 0: {
         return Style.ALERT;
       }
@@ -98,7 +112,8 @@ public class CroutonDemo extends Activity implements OnClickListener, OnItemSele
   }
 
   private void showNonCustomCrouton() {
-    Style croutonStyle = getSelectedStyleFromSpinner();
+    final int id = getSelectedSpinnerItemId();
+    Style croutonStyle = getSelectedStyleFromSpinner(id);
     String croutonText = getCroutonText();
 
     Crouton.makeText(this, croutonText, croutonStyle).show();
@@ -131,7 +146,25 @@ public class CroutonDemo extends Activity implements OnClickListener, OnItemSele
 
     Crouton.makeText(this, croutonText, croutonStyle).show();
   }
-
+  
+  private void showCustomViewCrouton() {
+    ImageView view = new ImageView(getApplicationContext());
+    view.setImageResource(R.drawable.ic_launcher);
+    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+    params.gravity = Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM;
+    params.bottomMargin = 20;
+    view.setLayoutParams(params);
+    Crouton c = Crouton.make(this, view);
+    c.show();
+  }
+  
+  private void showBottomCenterCrouton() {
+    String croutonText = getCroutonText();
+    Crouton c = Crouton.makeText(this, croutonText, Style.ALERT);
+    c.setGravity(Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 20);
+    c.show();
+  }
+  
   private String getCroutonDurationString() {
     EditText croutonDurationEdit = (EditText) findViewById(R.id.edit_text_duration);
 
